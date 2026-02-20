@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 export default function App() {
   const [players, setPlayers] = useState([])
@@ -8,6 +8,38 @@ export default function App() {
   const [playerName, setPlayerName] = useState('')
   const draggedIndex = useRef(null)
   const touchDraggedIndex = useRef(null)
+
+  // Load players from localStorage on mount
+  useEffect(() => {
+    const savedPlayers = localStorage.getItem('shotpuno_players')
+    const savedIndex = localStorage.getItem('shotpuno_currentIndex')
+    const savedFirstClick = localStorage.getItem('shotpuno_firstClick')
+
+    if (savedPlayers) {
+      setPlayers(JSON.parse(savedPlayers))
+    }
+    if (savedIndex !== null) {
+      setCurrentIndex(parseInt(savedIndex, 10))
+    }
+    if (savedFirstClick !== null) {
+      setFirstClick(JSON.parse(savedFirstClick))
+    }
+  }, [])
+
+  // Save players to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('shotpuno_players', JSON.stringify(players))
+  }, [players])
+
+  // Save currentIndex to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('shotpuno_currentIndex', currentIndex.toString())
+  }, [currentIndex])
+
+  // Save firstClick to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('shotpuno_firstClick', JSON.stringify(firstClick))
+  }, [firstClick])
 
   const addPlayer = () => {
     if (playerName.trim()) {
